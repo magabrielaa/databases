@@ -1,0 +1,1 @@
+SELECT AVG(avgscore), maxplayers FROM games GROUP BY (maxplayers) ORDER BY (maxplayers);

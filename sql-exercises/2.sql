@@ -1,0 +1,1 @@
+SELECT name FROM games WHERE (avgscore > 7.3 AND avgscore < 7.6) OR (maxplayers = 9);

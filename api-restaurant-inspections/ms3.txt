@@ -1,0 +1,42 @@
+1. SIMILARITY ALGORITHMS AND METHODS
+We implemented the helper function find_similarity(), where we calculated the composite similarity scores of each dirty
+restaurant compared with all the restaurant records.  See below an explanation for the chosen algorithms and methodology:
+    a.) Name Similarity: We decided to use the Jaro Winkler algorithm to determine the similarity score of the restaurant
+        names because this method is useful for when strings have common prefixes in them.  We ultimately gave this score
+        the highest weight (0.4) because it is the main characteristic that distinguishes each restaurant and is the main
+        way a user would search for a restaurant.
+    b.) Address Similarity: We decided to use the Jaccard measure to determine the similarity score of the restaurant
+        addresses because this is a set-based method to divide the string into tokens which can be very useful for when 
+        two addresses have common street names, but might not both be fully spelled out (ie, 1000 E Michigan Ave VS 1000
+        East Michigan Avenue), or when one of the addresses may be including/excluding certain terms (ie, E or AVE).  We
+        ultimately gave this score the second highest weight (0.35) because it is the secondary characteristic that 
+        would help distinguish each restaurant from another.
+    c.) City Similarity: We decided to use the Levenshtein edit distance to determine the similarity score of the restaurant
+        cities because this method is useful for strings with shorter lengths that could potentially only need a few changes
+        to convert from one string to the other.  We ultimately gave this score not very much weight (0.08) because there are
+        countless restaurants in any given city and the whole database is filled with Chicago restaurants, so we wouldn't
+        expect many restaurants to have this characteristic different from each other.
+    d.) State Similarity: We decided to use an Exact Match algorithm to determine the similarity score of the restaurant
+        states because this method is useful for when strings are only a couple of characters long and there is very little
+        variability in going from two letters to a different combination of two letters.  Also, most potential users would
+        know all the 50 US states.  We ultimately gave this the lowest weight (0.05) because it is the least telling
+        characteristic to distinguish each restaurant from another since it is the highest characteristic in the hierarchy.
+    e.) ZIP Code Similarity: We decided to use the Levenshtein edit distance to determine the similarity score of the restaurant
+        ZIP codes because this method is useful for strings with shorter lengths that could potentially only need a few changes
+        to convert from one string to the other, and ZIP codes are very short strings.  We originally were going to use the
+        Needleman Wunsch measure because these codes are all of the same short length of five characters and this measure could
+        help ignore certain gaps in the ZIP codes, but we ultimately decided not to use this because we weren't supposed to use 
+        the numpy library in this project.  We ultimately gave this score not very much weight (0.12), but more than city and 
+        state because it's still not a very indicative characteristic for any given restaurant, but ZIP codes could definitely
+        vary more than either cities or states could.
+
+2. MATCHING THRESHOLD
+We decided to use a matching threshold of 0.8 because it was enough to safely conclude a restaurant match, but gave enough
+leeway for user error/typos in their queries and leaving certain search terms out. 
+
+3. METHODOLOGY FOR CHOOSING THE PRIMARY/AUTHORITATIVE KEY
+When finding a match for a given record, and after determining the set of linked records, we were considering a few different 
+methods, but ultimately decided to use a hybrid key as our primary/authoritative key.  We found the length of each attributes
+from each record being compared and then chose the longest entry because we made the assumption that it would have the most
+complete information and details.  We then took these attributes and used them to create an entirely new record to insert into
+our table.

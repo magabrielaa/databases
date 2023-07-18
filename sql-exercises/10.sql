@@ -1,0 +1,1 @@
+SELECT name, CHAR_LENGTH(name) AS namelen FROM games WHERE minplayers >= 3 AND maxplayers <= 5 ORDER BY CHAR_LENGTH(name) DESC LIMIT 10;

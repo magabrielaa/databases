@@ -1,0 +1,1 @@
+SELECT name, avgscore FROM games ORDER BY avgscore DESC LIMIT 10;

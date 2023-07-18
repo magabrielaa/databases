@@ -1,0 +1,1 @@
+SELECT DISTINCT name FROM games WHERE LOWER(name) LIKE '%edition%' OR LOWER(name) LIKE '%game%';

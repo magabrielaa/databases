@@ -1,0 +1,48 @@
+1. BLOCKING METHOD
+For blocking, we extracted the unique ZIP codes from the ri_restaurants table, then iterated through them to create blocks
+of records based on ZIP codes by creating one temp table at a time. We opted for ZIP code as the blocking attribute because
+we needed a middle point attribute to block on, where we could isolate records that share some of the same attribute values,
+but where not all of them were the same (ie, with city or state), while at the same time not having every record be completely 
+unique (ie, with name or address).
+
+2. INDEXING METHOD
+Having blocks on ZIP code, we figured the best attribute to index into each block would be the restaurant name, as it is more
+likely to be unique and more significantly representative of a restaurant. For example, for address, there could be more than
+one restaurant with similar addresses because they are made of similar sequential number components that may only vary one or 
+two numbers at the end of the street number. We created a new attribute in each temp table that takes the first character of 
+the restaurant name string and that is the attribute we indexed on.
+
+-- 100 records
+MS3:
+    Run #1 : 0.60s user 0.11s system 18% cpu 3.846 total
+    Run #2 : 0.51s user 0.08s system 16% cpu 3.583 total
+    Run #3 : 0.56s user 0.08s system 17% cpu 3.646 total
+    Average = 0.56s
+
+MS4:
+    Run #1 : 0.51s user 0.08s system 49% cpu 1.198 total
+    Run #2 : 0.53s user 0.09s system 47% cpu 1.282 total
+    Run #3 : 0.53s user 0.08s system 49% cpu 1.226 total
+    Average = 0.52s
+
+-- 1000 records
+MS3:
+    Run #1 : 2.09s user 0.28s system 4% cpu 57.617 total
+    Run #2 : 2.37s user 0.33s system 4% cpu 1:01.85 total
+    Run #3 : 2.13s user 0.28s system 4% cpu 56.610 total
+    Average = 2.20s
+
+MS4:
+    Run #1 : 2.07s user 0.27s system 37% cpu 6.225 total
+    Run #2 : 2.02s user 0.26s system 37% cpu 6.094 total
+    Run #3 : 2.08s user 0.26s system 36% cpu 6.329 total
+    Average = 2.06s
+
+In terms of the average time (in seconds), we observe a very slight decrease with scaling enabled (0.56s vs 0.52s for
+100 records, which represents a 7.14% decrease in speed, and 2.20s vs. 2.06s for 1000 records, which represents a 6.36% 
+decrease in speed). 
+We can also observe a clear shift in storage allocation. With scaling disabled we see very low CPU usage percentages, 
+indicating that we were querying more into the disk/hardrive, which suggests a slower processing speed (and generaly is 
+indicative of more accuracy). Whereas when we had scaling enabled, we see much higher percentages of CPU usage, indicating 
+a faster processing speed (and possibly lower accuracy). Even though the differences in timing are small, we could expect 
+these differences to be larger if we had much bigger datasets (ie. closer to a terabyte or petabyte).
